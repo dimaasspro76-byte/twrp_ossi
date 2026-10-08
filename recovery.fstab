@@ -1,0 +1,57 @@
+# mount point        fstype  device                                   flags
+# Logical partitions (inside super)
+/system              ext4    system                                   flags=display=System;logical;slotselect
+/system_root         ext4    system                                   flags=display=System_Root;logical;slotselect;backup=0
+/vendor              ext4    vendor                                   flags=display=Vendor;logical;slotselect
+/product             ext4    product                                  flags=display=Product;logical;slotselect
+/odm                 ext4    odm                                      flags=display=ODM;logical;slotselect
+/my_product          ext4    my_product                               flags=display=my_product;logical;slotselect
+/my_engineering      ext4    my_engineering                           flags=display=my_engineering;logical;slotselect
+/my_company          ext4    my_company                               flags=display=my_company;logical;slotselect
+/my_carrier          ext4    my_carrier                               flags=display=my_carrier;logical;slotselect
+/my_region           ext4    my_region                                flags=display=my_region;logical;slotselect
+/my_heytap           ext4    my_heytap                                flags=display=my_heytap;logical;slotselect
+/my_stock            ext4    my_stock                                 flags=display=my_stock;logical;slotselect
+/my_preload          ext4    my_preload                               flags=display=my_preload;logical;slotselect
+/my_bigball          ext4    my_bigball                               flags=display=my_bigball;logical;slotselect
+/my_manifest         ext4    my_manifest                              flags=display=my_manifest;logical;slotselect
+
+# Physical partitions (A/B)
+/boot                emmc    /dev/block/by-name/boot                  flags=display=Boot;slotselect
+/vendor_boot         emmc    /dev/block/by-name/vendor_boot           flags=display=Vendor_Boot;slotselect
+/dtbo                emmc    /dev/block/by-name/dtbo                  flags=display=DTBO;slotselect
+/vbmeta              emmc    /dev/block/by-name/vbmeta                flags=display=VBMeta;slotselect
+/vbmeta_system       emmc    /dev/block/by-name/vbmeta_system         flags=display=VBMeta_System;slotselect
+/vbmeta_vendor       emmc    /dev/block/by-name/vbmeta_vendor         flags=display=VBMeta_Vendor;slotselect
+/tee                 emmc    /dev/block/by-name/tee                   flags=display=TEE;slotselect
+/lk                  emmc    /dev/block/by-name/lk                    flags=display=LK;slotselect
+/scp                 emmc    /dev/block/by-name/scp                   flags=display=SCP;slotselect
+/sspm                emmc    /dev/block/by-name/sspm                  flags=display=SSPM;slotselect
+/spmfw               emmc    /dev/block/by-name/spmfw                 flags=display=SPMFW;slotselect
+/md1img              emmc    /dev/block/by-name/md1img                flags=display=MD1IMG;slotselect
+/gz                  emmc    /dev/block/by-name/gz                    flags=display=GZ;slotselect
+/cdt_engineering     emmc    /dev/block/by-name/cdt_engineering       flags=display=CDT_Engineering;slotselect
+
+# Data / metadata
+/data                f2fs    /dev/block/by-name/userdata              flags=display=Data;fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized;metadata_encryption=aes-256-xts
+/metadata            ext4    /dev/block/by-name/metadata              flags=display=Metadata
+
+# MTK / OPLUS service partitions
+/mnt/vendor/protect_f ext4   /dev/block/by-name/protect1              flags=display=protect_f
+/mnt/vendor/protect_s ext4   /dev/block/by-name/protect2              flags=display=protect_s
+/mnt/vendor/nvdata   ext4    /dev/block/by-name/nvdata                flags=display=nvdata
+/mnt/vendor/nvcfg    ext4    /dev/block/by-name/nvcfg                 flags=display=nvcfg
+/persist             ext4    /dev/block/by-name/persist               flags=display=Persist
+/nvram               emmc    /dev/block/by-name/nvram                 flags=display=NVRAM
+/proinfo             emmc    /dev/block/by-name/proinfo               flags=display=Proinfo
+/logo                emmc    /dev/block/by-name/logo                  flags=display=Logo
+/expdb               emmc    /dev/block/by-name/expdb                 flags=display=Expdb
+/seccfg              emmc    /dev/block/by-name/seccfg                flags=display=Seccfg
+/otp                 emmc    /dev/block/by-name/otp                   flags=display=OTP
+/frp                 emmc    /dev/block/by-name/frp                   flags=display=FRP
+/misc                emmc    /dev/block/by-name/para                  flags=display=Misc
+/boot_para           emmc    /dev/block/by-name/boot_para             flags=display=Boot_Para
+
+# Removable
+/external_sd         auto    /devices/platform/externdevice*          flags=display=MicroSD;storage;wipeingui;removable
+/usb_otg             auto    /devices/platform/11200000.usb3_xhci*    flags=display=USB_OTG;storage;wipeingui;removable

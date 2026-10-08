@@ -1,0 +1,10 @@
+# TWRP device tree: OPPO CPH2477 (OP56F5, MT6765) — "ossi"
+
+```
+#
+# Copyright (C) 2026 The Android Open Source Project
+# Copyright (C) 2026 SebaUbuntu's TWRP device tree generator
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+```

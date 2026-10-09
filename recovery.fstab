@@ -33,7 +33,7 @@
 /cdt_engineering     emmc    /dev/block/by-name/cdt_engineering       flags=display=CDT_Engineering;slotselect
 
 # Data / metadata
-/data                f2fs    /dev/block/by-name/userdata              flags=display=Data;fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized;metadata_encryption=aes-256-xts
+/data                f2fs    /dev/block/by-name/userdata              flags=display=Data
 /metadata            ext4    /dev/block/by-name/metadata              flags=display=Metadata
 
 # MTK / OPLUS service partitions

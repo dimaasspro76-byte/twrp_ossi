@@ -122,3 +122,10 @@ TW_INCLUDE_FBE_METADATA_DECRYPT := true
 # resetprop: put libresetprop in recoveryramdisk
 TARGET_RECOVERY_DEVICE_MODULES += libresetprop
 TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libresetprop.so
+
+# libs for vendor.trustonic.tee@1.1-service
+TARGET_RECOVERY_DEVICE_MODULES += libhidlmemory android.hidl.allocator@1.0 android.hidl.memory@1.0
+TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libhidlmemory.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hidl.allocator@1.0.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hidl.memory@1.0.so

@@ -2,19 +2,19 @@
 # Logical partitions (inside super)
 /system              ext4    system                                   flags=display=System;logical;slotselect
 /system_root         ext4    system                                   flags=display=System_Root;logical;slotselect;backup=0
-/vendor              ext4    vendor                                   flags=display=Vendor;logical;slotselect
+/vendor              erofs    vendor                                   flags=display=Vendor;logical;slotselect;mounttodecrypt
 /product             ext4    product                                  flags=display=Product;logical;slotselect
-/odm                 ext4    odm                                      flags=display=ODM;logical;slotselect
-/my_product          ext4    my_product                               flags=display=my_product;logical;slotselect
-/my_engineering      ext4    my_engineering                           flags=display=my_engineering;logical;slotselect
-/my_company          ext4    my_company                               flags=display=my_company;logical;slotselect
-/my_carrier          ext4    my_carrier                               flags=display=my_carrier;logical;slotselect
-/my_region           ext4    my_region                                flags=display=my_region;logical;slotselect
-/my_heytap           ext4    my_heytap                                flags=display=my_heytap;logical;slotselect
-/my_stock            ext4    my_stock                                 flags=display=my_stock;logical;slotselect
-/my_preload          ext4    my_preload                               flags=display=my_preload;logical;slotselect
-/my_bigball          ext4    my_bigball                               flags=display=my_bigball;logical;slotselect
-/my_manifest         ext4    my_manifest                              flags=display=my_manifest;logical;slotselect
+/odm                 erofs    odm                                      flags=display=ODM;logical;slotselect;mounttodecrypt
+/my_product          erofs    my_product                               flags=display=my_product;logical;slotselect
+/my_engineering      erofs    my_engineering                           flags=display=my_engineering;logical;slotselect
+/my_company          erofs    my_company                               flags=display=my_company;logical;slotselect
+/my_carrier          erofs    my_carrier                               flags=display=my_carrier;logical;slotselect
+/my_region           erofs    my_region                                flags=display=my_region;logical;slotselect
+/my_heytap           erofs    my_heytap                                flags=display=my_heytap;logical;slotselect
+/my_stock            erofs    my_stock                                 flags=display=my_stock;logical;slotselect
+/my_preload          erofs    my_preload                               flags=display=my_preload;logical;slotselect
+/my_bigball          erofs    my_bigball                               flags=display=my_bigball;logical;slotselect
+/my_manifest         erofs    my_manifest                              flags=display=my_manifest;logical;slotselect
 
 # Physical partitions (A/B)
 /boot                emmc    /dev/block/by-name/boot                  flags=display=Boot;slotselect
@@ -33,8 +33,8 @@
 /cdt_engineering     emmc    /dev/block/by-name/cdt_engineering       flags=display=CDT_Engineering;slotselect
 
 # Data / metadata
-/data                f2fs    /dev/block/by-name/userdata              flags=display=Data
-/metadata            ext4    /dev/block/by-name/metadata              flags=display=Metadata
+/data                f2fs    /dev/block/by-name/userdata              flags=display=Data;fileencryption=aes-256-xts:aes-256-cts:v2;keydirectory=/metadata/vold/metadata_encryption;fsflags=noatime,nosuid,nodev,discard,noflush_merge,fsync_mode=nobarrier,reserve_root=134217,resgid=1065,inlinecrypt
+/metadata            ext4    /dev/block/by-name/metadata              flags=display=Metadata;mounttodecrypt
 
 # MTK / OPLUS service partitions
 /mnt/vendor/protect_f ext4   /dev/block/by-name/protect1              flags=display=protect_f

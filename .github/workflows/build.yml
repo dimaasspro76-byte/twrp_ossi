@@ -33,7 +33,7 @@ jobs:
             git-core gnupg flex bison build-essential zip curl zlib1g-dev \
             libc6-dev-i386 libncurses5 x11proto-core-dev libx11-dev lib32z1-dev \
             libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig \
-            python3 python-is-python3 rsync bc cpio lz4 xz-utils ccache openjdk-11-jdk-headless
+            python3 python-is-python3 rsync bc cpio lz4 xz-utils ccache binutils openjdk-11-jdk-headless
           mkdir -p ~/bin
           curl -s https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
           chmod a+x ~/bin/repo
@@ -54,6 +54,24 @@ jobs:
           rsync -a --exclude '.git' --exclude '.github' "$GITHUB_WORKSPACE/device_tree/" ~/twrp/device/oplus/ossi/
           ls -la ~/twrp/device/oplus/ossi ~/twrp/device/oplus/ossi/prebuilt
 
+      - name: Fetch device dependencies (twrp.dependencies)
+        run: |
+          cd ~/twrp
+          python3 - <<'PY'
+          import json, os, subprocess
+          deps = json.load(open("device/oplus/ossi/twrp.dependencies"))
+          for d in deps:
+              target = d["target_path"]
+              if os.path.isdir(target):
+                  print("already present:", target)
+                  continue
+              url = "https://github.com/" + d["repository"]
+              print("cloning", url, d["revision"], "->", target)
+              subprocess.run(["git", "clone", "--depth=1", "-b", d["revision"], url, target], check=True)
+          PY
+          test -f external/magisk-prebuilt/resetprop/Android.bp
+          ls external/magisk-prebuilt | head
+
       - name: Build
         run: |
           cd ~/twrp
@@ -62,16 +80,36 @@ jobs:
           set +u
           source build/envsetup.sh
           lunch twrp_ossi-eng
-          mka ${{ inputs.build_target }} -j"$(nproc)"
+          set -o pipefail
+          mka ${{ inputs.build_target }} -j"$(nproc)" 2>&1 | tee "$HOME/build.log"
+
+      - name: Verify recovery shared libraries
+        run: |
+          cd ~/twrp
+          ROOT=out/target/product/ossi/recovery/root
+          BIN=$ROOT/system/bin/recovery
+          test -f "$BIN" || { echo "recovery binary missing"; exit 1; }
+          MISSING=0
+          for lib in $(readelf -d "$BIN" | sed -n 's/.*NEEDED.*\[\(.*\)\].*/\1/p'); do
+            if [ -z "$(find "$ROOT" -name "$lib" -print -quit)" ]; then
+              echo "MISSING in recovery root: $lib"
+              MISSING=1
+            fi
+          done
+          grep -n -i -E 'libresetprop|missing dep' "$HOME/build.log" | head -40 || true
+          exit $MISSING
 
       - name: Collect output
+        if: always()
         run: |
           mkdir -p "$GITHUB_WORKSPACE/out"
-          cp ~/twrp/out/target/product/ossi/boot.img "$GITHUB_WORKSPACE/out/twrp-boot.img" || true
+          cp ~/twrp/out/target/product/ossi/boot.img "$GITHUB_WORKSPACE/out/twrp-boot.img" 2>/dev/null || true
           cp ~/twrp/out/target/product/ossi/recovery.img "$GITHUB_WORKSPACE/out/" 2>/dev/null || true
+          cp "$HOME/build.log" "$GITHUB_WORKSPACE/out/build.log" 2>/dev/null || true
           ls -la "$GITHUB_WORKSPACE/out"
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: twrp-ossi

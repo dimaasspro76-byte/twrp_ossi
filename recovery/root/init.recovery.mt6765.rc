@@ -1,8 +1,19 @@
+# v2: TWRP (metadata encryption) needs keystore2 + keymaster at STARTUP, in
+# Decrypt_Data(), not only after the password is typed. So mount vendor/odm/persist
+# and start the whole TEE stack right away, instead of waiting for
+# twrp.mount_to_decrypt=1 (that property is only set later, in Decrypt_Device()).
 on property:twrp.super.symlinks_created=true
     wait /dev/block/mapper/vendor${ro.boot.slot_suffix} 10
     mount erofs /dev/block/mapper/vendor${ro.boot.slot_suffix} /vendor ro
     wait /dev/block/mapper/odm${ro.boot.slot_suffix} 10
     mount erofs /dev/block/mapper/odm${ro.boot.slot_suffix} /odm ro
+    mkdir /mnt/vendor/persist 0771 root root
+    mount ext4 /dev/block/by-name/persist /mnt/vendor/persist nosuid nodev noatime
+    mkdir /mnt/vendor/persist/mcRegistry 0771 root root
+    start mobicore
+    start tee-1-1
+    start vendor.keymaster-4-1-trustonic
+    start vendor.gatekeeper-1-0
 
 on init
     setprop sys.usb.configfs 1
@@ -14,10 +25,8 @@ on fs && property:ro.debuggable=0
     # set charging free due to it waits for USB activation
     start adbd
 
+# fallback: if something was stopped, TWRP's own trigger starts it again
 on property:twrp.mount_to_decrypt=1
-    mkdir /mnt/vendor/persist 0771 root root
-    mount ext4 /dev/block/by-name/persist /mnt/vendor/persist nosuid nodev noatime
-    mkdir /mnt/vendor/persist/mcRegistry 0771 root root
     start mobicore
     start tee-1-1
     start vendor.keymaster-4-1-trustonic

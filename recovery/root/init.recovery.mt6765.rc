@@ -14,6 +14,8 @@ on property:twrp.super.symlinks_created=true
     start tee-1-1
     start vendor.keymaster-4-1-trustonic
     start vendor.gatekeeper-1-0
+    start keymaster_attestation-1-1
+    restart keystore2
 
 on init
     setprop sys.usb.configfs 1
@@ -97,5 +99,15 @@ service vendor.gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-ser
     disabled
     user root
     group root
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64
+
+service keymaster_attestation-1-1 /vendor/bin/hw/vendor.mediatek.hardware.keymaster_attestation@1.1-service
+    interface vendor.mediatek.hardware.keymaster_attestation@1.0::IKeymasterDevice default
+    interface vendor.mediatek.hardware.keymaster_attestation@1.1::IKeymasterDevice default
+    class hal
+    user system
+    group system
+    disabled
     seclabel u:r:recovery:s0
     setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64

@@ -100,9 +100,10 @@ BOARD_AVB_ENABLE := true
 BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
 
 # Hack: prevent anti rollback
-PLATFORM_SECURITY_PATCH := 2099-12-31
-VENDOR_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 16.1.0
+# Match the device's real Android identity; otherwise metadata-encrypted keymaster blobs are rejected.
+PLATFORM_SECURITY_PATCH := 2025-03-01
+VENDOR_SECURITY_PATCH := 2025-03-01
+PLATFORM_VERSION := 12
 
 # TWRP Configuration
 TW_THEME := portrait_hdpi

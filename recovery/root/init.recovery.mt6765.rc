@@ -6,7 +6,7 @@ on property:twrp.super.symlinks_created=true
     wait /dev/block/mapper/vendor${ro.boot.slot_suffix} 10
     mount erofs /dev/block/mapper/vendor${ro.boot.slot_suffix} /vendor ro
     wait /dev/block/mapper/odm${ro.boot.slot_suffix} 10
-    mount erofs /dev/block/mapper/odm${ro.boot.slot_suffix} /odm ro
+    exec -- /system/bin/sh /odm_mount.sh ${ro.boot.slot_suffix}
     mkdir /mnt/vendor/persist 0771 root root
     mount ext4 /dev/block/by-name/persist /mnt/vendor/persist nosuid nodev noatime
     mkdir /mnt/vendor/persist/mcRegistry 0771 root root
@@ -69,45 +69,3 @@ service mobicore /vendor/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry 
 	-r /odm/vendor/app/mcRegistry/6b3f5fa0f8cf55a7be2582587d62d63a.drbin \
         -r /odm/vendor/app/mcRegistry/09070000000000000000000000000000.drbin \
 	-r /vendor/app/mcRegistry/5020170115e016302017012521300000.drbin
-    disabled
-    user root
-    group root
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64
-    class core
-    priority -20
-
-service tee-1-1 /vendor/bin/hw/vendor.trustonic.tee@1.1-service
-    class hal
-    disabled
-    user root
-    group root
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64
-
-service vendor.keymaster-4-1-trustonic /vendor/bin/hw/android.hardware.keymaster@4.1-service.trustonic
-    class early_hal
-    disabled
-    user root
-    group root
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64
-
-service vendor.gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-service
-    interface android.hardware.gatekeeper@1.0::IGatekeeper default
-    class hal
-    disabled
-    user root
-    group root
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64
-
-service keymaster_attestation-1-1 /vendor/bin/hw/vendor.mediatek.hardware.keymaster_attestation@1.1-service
-    interface vendor.mediatek.hardware.keymaster_attestation@1.0::IKeymasterDevice default
-    interface vendor.mediatek.hardware.keymaster_attestation@1.1::IKeymasterDevice default
-    class hal
-    user system
-    group system
-    disabled
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64
